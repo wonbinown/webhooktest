@@ -1,0 +1,20 @@
+name: GitHub push Webhook
+
+on:
+  push:
+
+jobs:
+  send-webhook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Send webhook to AWS Lambda
+        run: |
+          echo "Sending webhook to Lambda..."
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"repository\": \"${{ github.repository }}\", \"ref\": \"${{ github.ref }}\", \"actor\": \"${{ github.actor }}\"}" \
+            ${{ secrets.LAMBDA_WEBHOOK_URL }}
